@@ -1,6 +1,6 @@
 #pragma once
 
-class Repo {
+class repo {
 public:
   static void init();
 };

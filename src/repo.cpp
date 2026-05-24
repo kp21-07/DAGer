@@ -7,9 +7,10 @@
 
 namespace fs = std::filesystem;
 
-void Repo::init()
+void repo::init()
 {
-	if (fs::exists(".dagr")) {
+	if (fs::exists(".dagr"))
+	{
 		std::cout << "Repo already initialized.\n";
 		return;
 	}
