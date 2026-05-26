@@ -1,14 +1,9 @@
-#include "include/commands.hpp"
-#include "include/repo.hpp"
-#include "include/obj_store.hpp"
-#include "include/utils.hpp"
+#include "dagr.h"
+#include <stdio.h>
 
-#include <iostream>
-
-void cmd::help()
-{
-	std::cout <<
-R"(dagr - mini git implementation
+void cmd_help() {
+  printf(
+      R"(dagr - mini git implementation
 
 Usage:
     dagr <command> [args]
@@ -21,29 +16,21 @@ Commands:
     cat-file <hash>     Print object contents
 
     help                Show this help message
-)";
+)");
 }
 
-void cmd::init()
-{
-	repo::init();
+void cmd_init() { repo_init(); }
+
+void cmd_hash_obj(const string file_path) {
+  binary_buffer data = read_binary_file(file_path.data());
+
+  string hash = write_object(data);
+
+  printf("%s\n", hash.data());
 }
 
-void cmd::hash_obj(const std::string file_path)
-{
-	std::vector<char> data = utils::read_binary_file(file_path);
+void cmd_cat_obj(const string hash) {
+  binary_buffer data = read_object(hash);
 
-	std::string hash = obj_store::write_object(data);
-
-	std::cout << hash << std::endl;
-}
-
-void cmd::cat_obj(const std::string hash)
-{
-	std::vector<char> data = obj_store::read_object(hash);
-
-	std::cout.write(
-			data.data(),
-			data.size()
-	);
+  fwrite(data.data(), sizeof(char), data.size(), stdout);
 }

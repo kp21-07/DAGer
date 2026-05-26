@@ -1,16 +1,14 @@
-#include "include/hashing.hpp"
-#include "include/external/sha1.hpp"
+#include "dagr.h"
+#include "external/sha1.hpp"
 
-std::string hashing::sha1(std::vector<char> & data)
+string sha1(binary_buffer& data)
 {
 	SHA1 checksum;
 
-	std::string temp(
-			data.begin(),
-			data.end()
-	);
+	std::string temp(data.data(), data.size());
 	
 	checksum.update(temp);
 	
-	return checksum.final();
+	std::string res = checksum.final();
+	return string(res.c_str());
 }

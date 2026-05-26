@@ -1,28 +1,24 @@
-#include "include/repo.hpp"
-#include "include/constants.hpp"
+#include "dagr.h"
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <stdio.h>
 
-#include <filesystem>
-#include <fstream>
-#include <iostream>
-
-namespace fs = std::filesystem;
-
-void repo::init()
+void repo_init()
 {
-	if (fs::exists(".dagr"))
+	if (access(".dagr", F_OK) == 0)
 	{
-		std::cout << "Repo already initialized.\n";
+		printf("Repo already initialized.\n");
 		return;
 	}
 
-	fs::create_directory(constants::DAGR);
-	fs::create_directory(constants::OBJECTS_DIR);
-	fs::create_directory(constants::REFS_DIR);
+	mkdir(DAGR, 0755);
+	mkdir(OBJECTS_DIR, 0755);
+	mkdir(REFS_DIR, 0755);
 
-	std::ofstream head(constants::HEAD_FILE);
-	head << "ref: refs/main\n";
+	write_file(HEAD_FILE, "ref: refs/main\n");
 
-	std::ofstream index(constants::INDEX_FILE);
+	write_file(INDEX_FILE, "");
 
-	std::cout << "Initialized empty repo.\n";
+	printf("Initialized empty repo.\n");
 }

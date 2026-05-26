@@ -1,43 +1,34 @@
-#include "include/obj_store.hpp"
-#include "include/constants.hpp"
-#include "include/hashing.hpp"
-#include "include/utils.hpp"
+#include "dagr.h"
+#include <stdio.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-#include <string>
-#include <filesystem>
+string write_object(binary_buffer &data) {
+  string hash = sha1(data);
 
-namespace fs = std::filesystem;
+  string dir_name = hash_dir(hash);
+  string file_name = hash_file(hash);
 
-std::string obj_store::write_object(std::vector<char> & data)
-{
-	std::string hash = hashing::sha1(data);
+  char dir_path[512];
+  sprintf(dir_path, "%s/%s", OBJECTS_DIR, dir_name.data());
 
-	std::string dir_name = utils::hash_dir(hash);
-	std::string file_name = utils::hash_file(hash);
+  char file_path[512];
+  sprintf(file_path, "%s/%s", dir_path, file_name.data());
 
-	fs::path path =
-		fs::path(constants::OBJECTS_DIR)
-		/ dir_name
-		/ file_name;
+  mkdir(dir_path, 0755);
 
-	fs::create_directories(
-		fs::path(constants::OBJECTS_DIR)
-		/ dir_name);
+  write_binary_file(file_path, data);
 
-	utils::write_binary_file(path, data);
-
-	return hash;
+  return hash;
 }
 
-std::vector<char> obj_store::read_object (const std::string& hash)
-{
-	std::string dir_name = utils::hash_dir(hash);
-	std::string file_name = utils::hash_file(hash);
+binary_buffer read_object(const string &hash) {
+  string dir_name = hash_dir(hash);
+  string file_name = hash_file(hash);
 
-	fs::path path =
-		fs::path(constants::OBJECTS_DIR)
-		/ dir_name
-		/ file_name;
+  char file_path[512];
+  sprintf(file_path, "%s/%s/%s", OBJECTS_DIR, dir_name.data(),
+          file_name.data());
 
-	return utils::read_binary_file(path);
+  return read_binary_file(file_path);
 }
