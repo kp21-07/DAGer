@@ -44,6 +44,20 @@ int main(int argc, char **argv)
 
 		cmd_cat_obj(hash);
 	}
+	else if (command == "add")
+	{
+		vector<string> files;
+		int i = 2;
+		while(argv[i]) {
+			files.push_back(argv[i]);
+			i++;
+		}
+		cmd_add(files);
+	}
+	else if (command == "status")
+	{
+		cmd_status();
+	}
 	else
 	{
 		printf("Unknown command\n");

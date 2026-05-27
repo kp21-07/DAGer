@@ -43,20 +43,32 @@ Stores objects in a Git-like layout:
 
 Outputs the data stores respective of the hash
 
+### dagr add <file>
+
+Update .dagr/index to store the file name and the most recent hashed content.
+
+### dagr status
+
+Identifies the modified files compared to the most recet staged content.
+
 ## Project Structure
 
 ```
 dagr/
 │
-├── src/
-│   ├── include/
-│   ├── main.cpp
-│   ├── command.cpp
-│   ├── repo.cpp
-│   ├── hashing.cpp
-│   ├── obj_store.cpp
-│   └── utils.cpp
+├── dagr.h
+├── types.h
 │
+├── main.cpp
+├── command.cpp
+├── repo.cpp
+├── hashing.cpp
+├── index.cpp
+├── obj_store.cpp
+├── utils.cpp
+│
+├── bin/
 ├── build.sh
+│
 └── README.md
 ```

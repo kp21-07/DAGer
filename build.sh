@@ -2,15 +2,20 @@
 
 set -e
 
+mkdir -p bin
+
 time clang++ \
     -std=c++20 \
     -Wall \
     -Wextra \
     -Wpedantic\
     -O0\
-    src/*.cpp \
-    -o dagr
+    ./*.cpp \
+    -lcrypto \
+    -o bin/dagr
 
-cp dagr "test/dagr"
+mkdir -p test
+
+cp bin/dagr "test/dagr"
 
 echo -e "\nBuild successful!"

@@ -41,6 +41,43 @@ string read_file(const char *path) {
 }
 
 //
+// TEXT FILE WRITE
+//
+
+void write_file(const char *path, const string &content, bool append) {
+  int flags = O_WRONLY | O_CREAT;
+  if (append) {
+    flags |= O_APPEND;
+  } else {
+    flags |= O_TRUNC;
+  }
+  int fd = open(path, flags, 0644);
+
+  if (fd < 0) {
+    fprintf(stderr, "Error: Failed to write file '%s'\n", path);
+    exit(1);
+  }
+
+  if (!content.is_empty()) {
+    const char *ptr = content.data();
+    size_t remaining = content.size();
+    while (remaining > 0) {
+      ssize_t bytes_written = write(fd, ptr, remaining);
+      if (bytes_written < 0) {
+        close(fd);
+        fprintf(stderr, "Error: Failed to write all content to file '%s'\n", path);
+        exit(1);
+      }
+      ptr += bytes_written;
+      remaining -= bytes_written;
+    }
+  }
+
+  close(fd);
+}
+
+
+//
 // BINARY FILE READ
 //
 
@@ -72,36 +109,6 @@ binary_buffer read_binary_file(const char *path) {
   }
 
   return data;
-}
-
-//
-// TEXT FILE WRITE
-//
-
-void write_file(const char *path, const string &content) {
-  int fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-
-  if (fd < 0) {
-    fprintf(stderr, "Error: Failed to write file '%s'\n", path);
-    exit(1);
-  }
-
-  if (!content.is_empty()) {
-    const char *ptr = content.data();
-    size_t remaining = content.size();
-    while (remaining > 0) {
-      ssize_t bytes_written = write(fd, ptr, remaining);
-      if (bytes_written < 0) {
-        close(fd);
-        fprintf(stderr, "Error: Failed to write all content to file '%s'\n", path);
-        exit(1);
-      }
-      ptr += bytes_written;
-      remaining -= bytes_written;
-    }
-  }
-
-  close(fd);
 }
 
 //

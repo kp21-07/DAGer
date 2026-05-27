@@ -3,7 +3,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-string write_object(binary_buffer &data) {
+string write_object(binary_buffer &data)
+{
   string hash = sha1(data);
 
   string dir_name = hash_dir(hash);
@@ -22,7 +23,8 @@ string write_object(binary_buffer &data) {
   return hash;
 }
 
-binary_buffer read_object(const string &hash) {
+binary_buffer read_object(const string &hash)
+{
   string dir_name = hash_dir(hash);
   string file_name = hash_file(hash);
 
