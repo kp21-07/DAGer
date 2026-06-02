@@ -28,6 +28,13 @@ void cmd_status();
 
 
 //
+// status.cpp
+//
+
+void run_status();
+
+
+//
 // hashing.cpp
 //
 
@@ -61,7 +68,33 @@ struct IndexEntry {
 vector<IndexEntry> read_index();
 void               write_index(const vector<IndexEntry>& entries);
 
-void               add_file(const string& filename);
+void add_file(const string& filename);
+
+
+//
+// tree.cpp
+//
+
+struct TreeEntry {
+	int type; // 0 - blob, 1 - subtree
+	string name;
+	string hash;
+};
+
+string write_tree();
+
+//
+// commit.cpp
+//
+
+struct CommitObject {
+	string tree_hash;
+	string parent_hash;
+	string message;
+	string timestamp;
+};
+
+string create_commit(const string& message);
 
 
 //
