@@ -32,6 +32,13 @@ struct vector {
 		}
 	}
 
+	vector(size_t sz, const T& val = T()) : m_data(nullptr), m_size(sz), m_capacity(sz) {
+		m_data = new T[sz];
+		for (size_t i = 0; i < sz; ++i) {
+			m_data[i] = val;
+		}
+	}
+
 	vector& operator=(const vector& other) {
 		if (this != &other) {
 			delete[] m_data;

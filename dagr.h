@@ -21,13 +21,17 @@
 
 void cmd_help();
 void cmd_init();
+
 void cmd_hash_obj(const string content);
 void cmd_cat_obj (const string hash);
 void cmd_add     (const vector<string>& files);
-void cmd_status();
+
 void cmd_write_tree();
 void cmd_commit  (const string& message);
-void cmd_log     ();
+
+void cmd_status();
+void cmd_log   ();
+void cmd_diff  ();
 
 
 //
@@ -42,6 +46,13 @@ void run_status();
 //
 
 void run_log();
+
+
+//
+// diff.cpp
+//
+
+void run_diff();
 
 
 //

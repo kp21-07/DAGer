@@ -3,14 +3,13 @@
 #include <stdio.h>
 
 // Commands that need an existing repo
-static bool require_repo(const char* cmd)
+static bool is_dagr_repo()
 {
 	if (!repo_exists()) {
 		fprintf(stderr, "fatal: not a dagr repository: .dagr\n"
 		                "Run 'dagr init' to create one.\n");
 		return false;
 	}
-	(void)cmd;
 	return true;
 }
 
@@ -52,7 +51,7 @@ int main(int argc, char **argv)
 	}
 	else if (command == "add")
 	{
-		if (!require_repo("add")) return 1;
+		if (!is_dagr_repo()) return 1;
 
 		if (argc < 3)
 		{
@@ -82,17 +81,17 @@ int main(int argc, char **argv)
 	}
 	else if (command == "status")
 	{
-		if (!require_repo("status")) return 1;
+		if (!is_dagr_repo()) return 1;
 		cmd_status();
 	}
 	else if (command == "write-tree")
 	{
-		if (!require_repo("write-tree")) return 1;
+		if (!is_dagr_repo()) return 1;
 		cmd_write_tree();
 	}
 	else if (command == "commit")
 	{
-		if (!require_repo("commit")) return 1;
+		if (!is_dagr_repo()) return 1;
 
 		if (argc < 4 || string(argv[2]) != "-m")
 		{
@@ -109,8 +108,13 @@ int main(int argc, char **argv)
 	}
 	else if (command == "log")
 	{
-		if (!require_repo("log")) return 1;
+		if (!is_dagr_repo()) return 1;
 		cmd_log();
+	}
+	else if (command == "diff")
+	{
+		if (!is_dagr_repo()) return 1;
+		cmd_diff();
 	}
 	else
 	{

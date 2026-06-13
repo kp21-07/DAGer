@@ -19,13 +19,15 @@ Commands:
 
     add <file...>       Stage files
 
-    status              Show working tree status
-
     write-tree          Write current index as tree object
 
     commit -m <msg>     Record a commit
 
+    status              Show working tree status
+
     log                 Show commit history
+
+    diff                Show changes not yet staged
 
     help                Show this help message
 )");
@@ -104,3 +106,6 @@ void cmd_commit(const string& message)
 }
 
 void cmd_log() { run_log(); }
+
+// Delegates to run_diff() to compare working tree against the index
+void cmd_diff() { run_diff(); }
