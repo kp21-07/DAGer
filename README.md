@@ -29,6 +29,7 @@ A learning project focused on understanding the internals of Git — content-add
 - **Tree objects** — the index is snapshotted into a flat tree object on every commit
 - **Commit chain** — each commit stores a `tree`, optional `parent`, and metadata; commits form a linked list traversable by `dagr log`
 - **Working tree status** — detects modified, deleted, and untracked files using POSIX `access()` and `opendir()`/`readdir()`
+- **Line-level diff** — LCS-based diff between the staged version and working tree, with colored output
 - **POSIX only** — no platform-specific APIs beyond POSIX and OpenSSL
 
 ---
@@ -99,6 +100,22 @@ Stores a file as a raw blob object and prints its SHA-1 hash:
 .dagr/objects/2a/ae6c35c94fcfb415dbe95f408b9ce91ee846ed
 ```
 
+### `dagr diff`
+
+Compares each staged file against its current working-tree version using **LCS (Longest Common Subsequence)** and prints a colored unified diff:
+
+```
+diff --dagr a/hello.txt b/hello.txt
+--- a/hello.txt
++++ b/hello.txt
+ unchanged line
+-old line
++new line
+ another unchanged line
+```
+
+Red lines (`-`) were in the staged version. Green lines (`+`) are in the working tree.
+
 ### `dagr cat-obj <hash>`
 
 Prints the raw contents of any stored object to stdout.
@@ -123,6 +140,7 @@ DAGer/
 ├── commit.cpp      — build and store commit objects
 ├── log.cpp         — parse and walk commit history
 ├── status.cpp      — working dir vs index comparison
+├── diff.cpp        — LCS-based line diff (staged vs working tree)
 ├── utils.cpp       — file I/O helpers
 │
 ├── bin/            — compiled output
