@@ -1,10 +1,7 @@
 #include "dagr.h"
 
 #include <stdio.h>
-#include <dirent.h>
-#include <sys/stat.h>
 #include <unistd.h>
-#include <string.h>
 
 // Simple string sorting helper for clean status output
 static void sort_strings(vector<string>& v) {
@@ -21,23 +18,7 @@ static void sort_strings(vector<string>& v) {
 }
 
 static void scan_current_directory(vector<string>& all_files) {
-  DIR* dir = opendir(".");
-  if (!dir) return;
-
-  struct dirent* entry;
-  while ((entry = readdir(dir)) != nullptr) {
-    if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0) {
-      continue;
-    }
-
-    struct stat st;
-    if (stat(entry->d_name, &st) == 0) {
-      if (S_ISREG(st.st_mode)) {
-        all_files.push_back(string(entry->d_name));
-      }
-    }
-  }
-  closedir(dir);
+  scan_cwd(all_files);
 }
 
 void run_status() {

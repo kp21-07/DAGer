@@ -3,6 +3,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+// SHA-1 hashes data, stores it under .dagr/objects/<xx>/<rest>, and returns the hash
 string write_object(binary_buffer &data)
 {
   string hash = sha1(data);
@@ -23,6 +24,7 @@ string write_object(binary_buffer &data)
   return hash;
 }
 
+// Resolves the object path from a hash and returns its raw bytes
 binary_buffer read_object(const string &hash)
 {
   string dir_name = hash_dir(hash);

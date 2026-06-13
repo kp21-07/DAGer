@@ -1,5 +1,6 @@
 #include "dagr.h"
 
+#include <dirent.h>
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -157,4 +158,32 @@ string hash_file(const string &hash) {
     return "";
   }
   return string(hash.data() + 2);
+}
+
+//
+// DIRECTORY SCAN
+//
+
+// Scans the current working directory and fills files with all regular files,
+// ignoring the dagr binary, .dagr, and .git
+void scan_cwd(vector<string>& files)
+{
+  DIR* dir = opendir(".");
+  if (!dir) return;
+
+  struct dirent* entry;
+  while ((entry = readdir(dir)) != nullptr) {
+    if (strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
+      continue;
+    if (strcmp(entry->d_name, "dagr") == 0)
+      continue;
+    if (entry->d_name[0] == '.')
+      continue;
+
+    struct stat st;
+    if (stat(entry->d_name, &st) == 0 && S_ISREG(st.st_mode)) {
+      files.push_back(string(entry->d_name));
+    }
+  }
+  closedir(dir);
 }

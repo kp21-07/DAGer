@@ -1,5 +1,6 @@
 #include "dagr.h"
 
+// Reads .dagr/index and returns all staged entries as a vector of {filename, hash}
 vector<IndexEntry> read_index()
 {
 	string contents = read_file(INDEX_FILE);
@@ -18,6 +19,7 @@ vector<IndexEntry> read_index()
 	return entries;
 }
 
+// Serializes entries to .dagr/index in the format "<filename> <hash>\n" per line
 void write_index(const vector<IndexEntry>& entries)
 {
 	string index_content;
@@ -41,6 +43,7 @@ void write_index(const vector<IndexEntry>& entries)
 	write_file(INDEX_FILE, index_content);
 }
 
+// Hashes a file, writes it as an object, and upserts its entry in the index
 void add_file(const string& filename)
 {
 	binary_buffer data = read_binary_file(filename.data());

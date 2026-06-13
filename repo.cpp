@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <stdio.h>
 
+// Creates the .dagr directory structure (objects/, refs/, HEAD, index) for a new repository
 void repo_init()
 {
 	if (access(".dagr", F_OK) == 0)
@@ -21,4 +22,10 @@ void repo_init()
 	write_file(INDEX_FILE, "");
 
 	printf("Initialized empty repo.\n");
+}
+
+// Returns true if a .dagr repository exists in the current directory
+bool repo_exists()
+{
+	return access(DAGR, F_OK) == 0;
 }

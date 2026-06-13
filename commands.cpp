@@ -1,6 +1,6 @@
 #include "dagr.h"
-#include "types.h"
 #include <stdio.h>
+#include <unistd.h>
 
 void cmd_help()
 {
@@ -16,6 +16,16 @@ Commands:
     hash-object <file>  Store file as object
 
     cat-file <hash>     Print object contents
+
+    add <file...>       Stage files
+
+    status              Show working tree status
+
+    write-tree          Write current index as tree object
+
+    commit -m <msg>     Record a commit
+
+    log                 Show commit history
 
     help                Show this help message
 )");
@@ -48,3 +58,49 @@ void cmd_add(const vector<string> &files)
 }
 
 void cmd_status() { run_status(); }
+
+void cmd_write_tree()
+{
+	string hash = write_tree();
+	printf("%s\n", hash.data());
+}
+
+// Creates a commit object from the current index and prints its hash
+void cmd_commit(const string& message)
+{
+	// Write a candidate tree from the current index
+	string new_tree = write_tree();
+
+	// Compare against the tree hash in the last commit — if identical, nothing changed
+	string ref_path = string(DAGR) + "/refs/main";
+	if (access(ref_path.data(), F_OK) == 0) {
+		string parent_hash = read_file(ref_path.data());
+		// trim newline
+		size_t len = parent_hash.length();
+		while (len > 0 && (parent_hash.data()[len-1] == '\n' || parent_hash.data()[len-1] == '\r')) len--;
+		string parent_hash_clean(parent_hash.data(), len);
+
+		binary_buffer obj = read_object(parent_hash_clean);
+		string obj_str(obj.data(), obj.size());
+		vector<string> lines = obj_str.split('\n');
+		if (lines.size() > 0) {
+			string first = lines[0];
+			if (strncmp(first.data(), "tree ", 5) == 0) {
+				string last_tree(first.data() + 5, first.length() - 5);
+				if (last_tree == new_tree) {
+					printf("Nothing to commit — working tree is clean.\n");
+					return;
+				}
+			}
+		}
+	} else if (read_index().size() == 0) {
+		// No prior commits: guard against completely empty index
+		printf("Nothing to commit\n");
+		return;
+	}
+
+	string hash = create_commit(message);
+	printf("[%s] %s\n", hash.data(), message.data());
+}
+
+void cmd_log() { run_log(); }

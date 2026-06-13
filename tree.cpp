@@ -1,6 +1,6 @@
 #include "dagr.h"
-#include "types.h"
 
+// Converts a list of TreeEntries into a flat text blob: "<type> <name> <hash>\n" per entry
 binary_buffer serialize_tree(vector<TreeEntry> entries)
 {
 	string data;
@@ -14,6 +14,7 @@ binary_buffer serialize_tree(vector<TreeEntry> entries)
 	return binary_buffer(data);
 }
 
+// Builds a tree object from the current index (flat, blobs only) and writes it to the object store
 string write_tree()
 {
 	vector<IndexEntry> idx_entries = read_index();

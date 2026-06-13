@@ -25,6 +25,9 @@ void cmd_hash_obj(const string content);
 void cmd_cat_obj (const string hash);
 void cmd_add     (const vector<string>& files);
 void cmd_status();
+void cmd_write_tree();
+void cmd_commit  (const string& message);
+void cmd_log     ();
 
 
 //
@@ -32,6 +35,13 @@ void cmd_status();
 //
 
 void run_status();
+
+
+//
+// log.cpp
+//
+
+void run_log();
 
 
 //
@@ -54,6 +64,7 @@ binary_buffer read_object (const string& hash);
 //
 
 void repo_init();
+bool repo_exists();
 
 
 //
@@ -109,5 +120,7 @@ void          write_binary_file(const char* path, const binary_buffer& data);
 
 string hash_dir (const string& hash);
 string hash_file(const string& hash);
+
+void scan_cwd(vector<string>& files);
 
 #endif /* DAGR_H */
