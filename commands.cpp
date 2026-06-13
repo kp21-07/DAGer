@@ -5,12 +5,15 @@
 void cmd_help()
 {
   printf(
-      R"(dagr - mini git implementation
+
+      R"(DAGer - Mini Git Implementation
 
 Usage:
+
     dagr <command> [args]
 
 Commands:
+
     init                Initialize repository
 
     hash-object <file>  Store file as object
@@ -30,6 +33,7 @@ Commands:
     diff                Show changes not yet staged
 
     help                Show this help message
+
 )");
 }
 
@@ -70,33 +74,33 @@ void cmd_write_tree()
 // Creates a commit object from the current index and prints its hash
 void cmd_commit(const string& message)
 {
-	// Write a candidate tree from the current index
 	string new_tree = write_tree();
-
-	// Compare against the tree hash in the last commit — if identical, nothing changed
 	string ref_path = string(DAGR) + "/refs/main";
+
 	if (access(ref_path.data(), F_OK) == 0) {
 		string parent_hash = read_file(ref_path.data());
-		// trim newline
 		size_t len = parent_hash.length();
+
 		while (len > 0 && (parent_hash.data()[len-1] == '\n' || parent_hash.data()[len-1] == '\r')) len--;
+
 		string parent_hash_clean(parent_hash.data(), len);
 
 		binary_buffer obj = read_object(parent_hash_clean);
 		string obj_str(obj.data(), obj.size());
 		vector<string> lines = obj_str.split('\n');
+
 		if (lines.size() > 0) {
-			string first = lines[0];
+			string first = lines[0]; // latest hash in format "tree <hash>"
 			if (strncmp(first.data(), "tree ", 5) == 0) {
-				string last_tree(first.data() + 5, first.length() - 5);
+				string last_tree(first.data() + 5, first.length() - 5); // The actual hash
 				if (last_tree == new_tree) {
 					printf("Nothing to commit — working tree is clean.\n");
 					return;
 				}
 			}
 		}
-	} else if (read_index().size() == 0) {
-		// No prior commits: guard against completely empty index
+	}
+	else if (read_index().size() == 0) {
 		printf("Nothing to commit\n");
 		return;
 	}
@@ -107,5 +111,4 @@ void cmd_commit(const string& message)
 
 void cmd_log() { run_log(); }
 
-// Delegates to run_diff() to compare working tree against the index
 void cmd_diff() { run_diff(); }
