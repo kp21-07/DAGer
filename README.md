@@ -127,24 +127,24 @@ Prints the raw contents of any stored object to stdout.
 ```
 DAGer/
 │
-├── dagr.h          — shared declarations and structs
-├── types.h         — custom string, vector, binary_buffer (no STL)
+├── src/                — source files
+│   ├── dagr.h          — shared declarations and structs
+│   ├── types.h         — custom string, vector, binary_buffer (no STL)
+│   ├── main.cpp        — CLI argument dispatch
+│   ├── commands.cpp    — thin command wrappers
+│   ├── repo.cpp        — repo initialization
+│   ├── hashing.cpp     — SHA-1 via OpenSSL
+│   ├── index.cpp       — read/write .dagr/index
+│   ├── obj_store.cpp   — write/read objects from .dagr/objects
+│   ├── tree.cpp        — serialize index → tree object
+│   ├── commit.cpp      — build and store commit objects
+│   ├── log.cpp         — parse and walk commit history
+│   ├── status.cpp      — working dir vs index comparison
+│   ├── diff.cpp        — LCS-based line diff (staged vs working tree)
+│   └── utils.cpp       — file I/O helpers
 │
-├── main.cpp        — CLI argument dispatch
-├── commands.cpp    — thin command wrappers
-├── repo.cpp        — repo initialization
-├── hashing.cpp     — SHA-1 via OpenSSL
-├── index.cpp       — read/write .dagr/index
-├── obj_store.cpp   — write/read objects from .dagr/objects
-├── tree.cpp        — serialize index → tree object
-├── commit.cpp      — build and store commit objects
-├── log.cpp         — parse and walk commit history
-├── status.cpp      — working dir vs index comparison
-├── diff.cpp        — LCS-based line diff (staged vs working tree)
-├── utils.cpp       — file I/O helpers
-│
-├── bin/            — compiled output
-├── build.sh        — build script
+├── bin/                — compiled output
+├── build.sh            — build script
 │
 └── README.md
 ```

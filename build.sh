@@ -5,7 +5,7 @@ set -e
 mkdir -p bin
 
 # Precompile the heavy header once
-clang++ -std=c++20 -x c++-header dagr.h -o dagr.h.pch
+clang++ -std=c++20 -x c++-header src/dagr.h -o src/dagr.h.pch
 
 time clang++ \
     -std=c++20 \
@@ -13,8 +13,8 @@ time clang++ \
     -Wextra \
     -Wpedantic\
     -O0\
-    -include-pch dagr.h.pch \
-    ./*.cpp \
+    -include-pch src/dagr.h.pch \
+    src/*.cpp \
     -lcrypto \
     -o bin/dagr
 

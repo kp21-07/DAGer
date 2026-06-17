@@ -67,6 +67,7 @@ vcpkg_installed/
 # test output & cache
 test/
 .cache/
+.vscode/
 
 # Project specific
 .dagr/
