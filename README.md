@@ -164,8 +164,7 @@ DAGer/
 │   └── utils.cpp       — file I/O helpers
 │
 ├── bin/                — compiled output
-├── test/               — test suite & test repositories
-│   └── run_tests.sh    — automated local & network integration tests
+├── run_tests.sh        — automated local & network integration tests
 │
 ├── build.sh            — build script
 │
