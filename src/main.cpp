@@ -1,7 +1,5 @@
 #include "dagr.h"
 
-#include <stdio.h>
-
 // Commands that need an existing repo
 static bool is_dagr_repo()
 {
@@ -115,6 +113,44 @@ int main(int argc, char **argv)
 	{
 		if (!is_dagr_repo()) return 1;
 		cmd_diff();
+	}
+	else if (command == "serve-git")
+	{
+		if (argc < 3)
+		{
+			printf("Usage: dagr serve-git <port>\n");
+			return 1;
+		}
+		cmd_serve_git(string(argv[2]));
+	}
+	else if (command == "clone")
+	{
+		if (argc < 4)
+		{
+			printf("Usage: dagr clone <ip> <port>\n");
+			return 1;
+		}
+		cmd_clone(string(argv[2]), string(argv[3]));
+	}
+	else if (command == "push")
+	{
+		if (!is_dagr_repo()) return 1;
+		if (argc < 4)
+		{
+			printf("Usage: dagr push <ip> <port>\n");
+			return 1;
+		}
+		cmd_push(string(argv[2]), string(argv[3]));
+	}
+	else if (command == "pull")
+	{
+		if (!is_dagr_repo()) return 1;
+		if (argc < 4)
+		{
+			printf("Usage: dagr pull <ip> <port>\n");
+			return 1;
+		}
+		cmd_pull(string(argv[2]), string(argv[3]));
 	}
 	else
 	{

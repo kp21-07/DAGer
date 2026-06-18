@@ -1,6 +1,4 @@
 #include "dagr.h"
-#include <stdio.h>
-#include <unistd.h>
 
 // Prints diff using LCS between staged and working-tree versions
 static void print_diff(const string& filename,

@@ -30,6 +30,7 @@ A learning project focused on understanding the internals of Git — content-add
 - **Commit chain** — each commit stores a `tree`, optional `parent`, and metadata; commits form a linked list traversable by `dagr log`
 - **Working tree status** — detects modified, deleted, and untracked files using POSIX `access()` and `opendir()`/`readdir()`
 - **Line-level diff** — LCS-based diff between the staged version and working tree, with colored output
+- **Remote Synchronization** — clone, push, and pull repositories over raw TCP sockets with concurrent connection handling, a strict 16MB packet memory limit, and path/hash validation (no built-in authentication/encryption)
 - **POSIX only** — no platform-specific APIs beyond POSIX and OpenSSL
 
 ---
@@ -120,6 +121,22 @@ Red lines (`-`) were in the staged version. Green lines (`+`) are in the working
 
 Prints the raw contents of any stored object to stdout.
 
+### `dagr serve-git <port>`
+
+Starts the Git server daemon on the specified port. It listens for incoming raw TCP socket connections and coordinates object exchanges (clones, pulls, pushes).
+
+### `dagr clone <ip> <port>`
+
+Clones a remote repository over TCP. It downloads the commit history and files, sets up tracking branches, and restores the working directory.
+
+### `dagr push <ip> <port>`
+
+Traverses the local commit history, identifies all missing commits/trees/blobs, packages and uploads them to the remote server, and updates the remote's branch tracking head.
+
+### `dagr pull <ip> <port>`
+
+Fetches new commit objects and files from the remote server, updates the local branch HEAD, and checkouts the files into your working directory.
+
 ---
 
 ## Project Structure
@@ -130,6 +147,9 @@ DAGer/
 ├── src/                — source files
 │   ├── dagr.h          — shared declarations and structs
 │   ├── types.h         — custom string, vector, binary_buffer (no STL)
+│   ├── net_utils.h     — socket utilities (partial send/recv)
+│   ├── net_utils.cpp   — low-level network I/O helpers
+│   ├── remote.cpp      — TCP client/server sync protocols
 │   ├── main.cpp        — CLI argument dispatch
 │   ├── commands.cpp    — thin command wrappers
 │   ├── repo.cpp        — repo initialization
@@ -144,6 +164,9 @@ DAGer/
 │   └── utils.cpp       — file I/O helpers
 │
 ├── bin/                — compiled output
+├── test/               — test suite & test repositories
+│   └── run_tests.sh    — automated local & network integration tests
+│
 ├── build.sh            — build script
 │
 └── README.md

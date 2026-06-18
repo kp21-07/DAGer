@@ -1,7 +1,5 @@
 #include "dagr.h"
-#include <stdio.h>
 #include <time.h>
-#include <unistd.h>
 
 // Resolve HEAD -> branch ref -> current commit hash
 static string get_head_commit_hash()

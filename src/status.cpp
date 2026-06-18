@@ -1,8 +1,5 @@
 #include "dagr.h"
 
-#include <stdio.h>
-#include <unistd.h>
-
 // Simple string sorting helper for clean status output
 static void sort_strings(vector<string>& v) {
   if (v.size() < 2) return;

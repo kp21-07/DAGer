@@ -1,6 +1,8 @@
 #ifndef DAGR_H
 #define DAGR_H
 
+#include <stdio.h>
+#include <unistd.h>
 #include "types.h"
 
 //
@@ -32,6 +34,11 @@ void cmd_commit  (const string& message);
 void cmd_status();
 void cmd_log   ();
 void cmd_diff  ();
+
+void cmd_serve_git(const string& port);
+void cmd_clone(const string& ip, const string& port);
+void cmd_push (const string& ip, const string& port);
+void cmd_pull (const string& ip, const string& port);
 
 
 //

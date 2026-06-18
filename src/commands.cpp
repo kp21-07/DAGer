@@ -1,6 +1,4 @@
 #include "dagr.h"
-#include <stdio.h>
-#include <unistd.h>
 
 void cmd_help()
 {
@@ -31,6 +29,14 @@ Commands:
     log                 Show commit history
 
     diff                Show changes not yet staged
+
+    serve-git <port>    Start a git server daemon on port
+
+    clone <ip> <port>   Clone a remote repository
+
+    push <ip> <port>    Push local commits to remote server
+
+    pull <ip> <port>    Pull remote commits from server
 
     help                Show this help message
 

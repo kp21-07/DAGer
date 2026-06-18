@@ -1,6 +1,5 @@
 #include "dagr.h"
 #include <openssl/sha.h>
-#include <stdio.h>
 
 string sha1(binary_buffer& data) {
     unsigned char hash[SHA_DIGEST_LENGTH];

@@ -143,6 +143,59 @@ struct string {
 			m_data[len] = '\0';
 	}
 
+	~string() {
+		free(m_data);
+	}
+
+	string(const string& other) {
+		m_size = other.m_size;
+		m_capacity = other.m_capacity;
+		if (other.m_data) {
+			m_data = (char *)malloc(m_capacity + 1);
+			if (m_data) {
+				memcpy(m_data, other.m_data, m_size + 1);
+			}
+		} else {
+			m_data = nullptr;
+		}
+	}
+
+	string& operator=(const string& other) {
+		if (this != &other) {
+			char* new_data = nullptr;
+			if (other.m_data) {
+				new_data = (char *)malloc(other.m_capacity + 1);
+				if (new_data) {
+					memcpy(new_data, other.m_data, other.m_size + 1);
+				}
+			}
+			free(m_data);
+			m_data = new_data;
+			m_size = other.m_size;
+			m_capacity = other.m_capacity;
+		}
+		return *this;
+	}
+
+	string(string&& other) noexcept : m_data(other.m_data), m_size(other.m_size), m_capacity(other.m_capacity) {
+		other.m_data = nullptr;
+		other.m_size = 0;
+		other.m_capacity = 0;
+	}
+
+	string& operator=(string&& other) noexcept {
+		if (this != &other) {
+			free(m_data);
+			m_data = other.m_data;
+			m_size = other.m_size;
+			m_capacity = other.m_capacity;
+			other.m_data = nullptr;
+			other.m_size = 0;
+			other.m_capacity = 0;
+		}
+		return *this;
+	}
+
 	char *data() const { return m_data; }
 
 	size_t length() const { return m_size; }
@@ -187,12 +240,16 @@ struct string {
 		return tokens;
 	}
 
-	bool operator==(const string other) const {
-		return strcmp(data(), other.data()) == 0;
+	bool operator==(const string& other) const {
+		const char* lhs = m_data ? m_data : "";
+		const char* rhs = other.m_data ? other.m_data : "";
+		return strcmp(lhs, rhs) == 0;
 	}
 
-	bool operator!=(const string other) const {
-		return strcmp(data(), other.data()) != 0;
+	bool operator!=(const string& other) const {
+		const char* lhs = m_data ? m_data : "";
+		const char* rhs = other.m_data ? other.m_data : "";
+		return strcmp(lhs, rhs) != 0;
 	}
 
 	friend string operator+(const string& lhs, const string& rhs) {
@@ -218,12 +275,69 @@ struct binary_buffer {
 	binary_buffer() : m_data(nullptr), m_size(0), m_capacity(0) {}
 
 	binary_buffer(size_t cap) : m_data(nullptr), m_size(0), m_capacity(cap) {
-			if (cap > 0) {
-					m_data = (char*)malloc(cap);
-			}
+		if (cap > 0) {
+			m_data = (char*)malloc(cap);
+		}
 	}
 
-	binary_buffer(string str) : m_data(str.data()), m_size(str.size()), m_capacity(str.size()) {}
+	binary_buffer(string str) : m_data(str.m_data), m_size(str.m_size), m_capacity(str.m_capacity) {
+		str.m_data = nullptr;
+		str.m_size = 0;
+		str.m_capacity = 0;
+	}
+
+	~binary_buffer() {
+		free(m_data);
+	}
+
+	binary_buffer(const binary_buffer& other) {
+		m_size = other.m_size;
+		m_capacity = other.m_capacity;
+		if (other.m_data) {
+			m_data = (char*)malloc(m_capacity);
+			if (m_data) {
+				memcpy(m_data, other.m_data, m_size);
+			}
+		} else {
+			m_data = nullptr;
+		}
+	}
+
+	binary_buffer& operator=(const binary_buffer& other) {
+		if (this != &other) {
+			char* new_data = nullptr;
+			if (other.m_data) {
+				new_data = (char*)malloc(other.m_capacity);
+				if (new_data) {
+					memcpy(new_data, other.m_data, other.m_size);
+				}
+			}
+			free(m_data);
+			m_data = new_data;
+			m_size = other.m_size;
+			m_capacity = other.m_capacity;
+		}
+		return *this;
+	}
+
+	binary_buffer(binary_buffer&& other) noexcept : m_data(other.m_data), m_size(other.m_size), m_capacity(other.m_capacity) {
+		other.m_data = nullptr;
+		other.m_size = 0;
+		other.m_capacity = 0;
+	}
+
+	binary_buffer& operator=(binary_buffer&& other) noexcept {
+		if (this != &other) {
+			free(m_data);
+			m_data = other.m_data;
+			m_size = other.m_size;
+			m_capacity = other.m_capacity;
+			other.m_data = nullptr;
+			other.m_size = 0;
+			other.m_capacity = 0;
+		}
+		return *this;
+	}
 
 	const char* data() const { return m_data; }
 	char* data() { return m_data; }
@@ -231,21 +345,21 @@ struct binary_buffer {
 	bool empty() const { return m_size == 0; }
 
 	void reserve(size_t new_cap) {
-			if (new_cap <= m_capacity) return;
-			char* new_data = (char*)realloc(m_data, new_cap);
-			if (new_data) {
-					m_data = new_data;
-					m_capacity = new_cap;
-			}
+		if (new_cap <= m_capacity) return;
+		char* new_data = (char*)realloc(m_data, new_cap);
+		if (new_data) {
+			m_data = new_data;
+			m_capacity = new_cap;
+		}
 	}
 
 	void append(const char* data, size_t len) {
-			if (!data || len == 0) return;
-			if (m_size + len > m_capacity) {
-					reserve((m_size + len) * 2);
-			}
-			memcpy(m_data + m_size, data, len);
-			m_size += len;
+		if (!data || len == 0) return;
+		if (m_size + len > m_capacity) {
+			reserve((m_size + len) * 2);
+		}
+		memcpy(m_data + m_size, data, len);
+		m_size += len;
 	}
 };
 

@@ -1,7 +1,5 @@
 #include "dagr.h"
-#include <stdio.h>
 #include <time.h>
-#include <unistd.h>
 
 // Serialize a CommitObject to a plain-text binary_buffer
 static binary_buffer serialize_commit(const CommitObject& commit)
